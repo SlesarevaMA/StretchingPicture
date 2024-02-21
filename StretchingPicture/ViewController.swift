@@ -42,8 +42,6 @@ final class ViewController: UIViewController {
     
     private func configureViews() {
         imageView.image = UIImage(named: "image")
-        imageView.contentMode = .scaleAspectFill
-        imageView.clipsToBounds = true
         
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.backgroundColor = .systemBackground
@@ -55,8 +53,9 @@ final class ViewController: UIViewController {
 extension ViewController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let newHeight = Constants.imageHeight - scrollView.contentOffset.y
-        imageView.frame.origin.y = scrollView.contentOffset.y
-        imageView.frame.size.height = newHeight
+        
+        imageView.frame.origin.y = min(scrollView.contentOffset.y, 0)
+        imageView.frame.size.height = max(newHeight, Constants.imageHeight)
         
         let topInset = max(newHeight, Constants.imageHeight) - view.safeAreaInsets.top
         scrollView.verticalScrollIndicatorInsets.top = topInset
